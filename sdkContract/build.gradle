@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+def curDate = new Date().format("_yyyyMMdd")
+def jarName = "sdkContract_${curDate.substring(1)}.jar"
+def jarDir = "${rootProject.getProjectDir().path}//lib-buildin//sdk//${curDate.substring(1)}//".replace("//", File.separator)
+
+// gradle libJar
+task libJar(type: Jar, dependsOn: ['build']) {
+    from(project.zipTree('build/intermediates/packaged-classes/release/classes.jar'))
+    destinationDir = file(jarDir)
+    archiveName = jarName
+
+    println "libJar, jarName:${jarName}, jarDir:${jarDir}"
+
+    //过滤对外敏感文件
+    exclude('**/package-info.class')
+    exclude('**/BuildConfig.class')
+    exclude('**/BuildConfig\$*.class')
+    exclude('**/R.class')
+    exclude('**/R\$*.class')
+}

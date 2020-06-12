@@ -1,0 +1,5 @@
+include ':sdk-server', ':sdkcontract'
+project(':sdk-server').projectDir = new File("./sdk-server/app")
+
+include ':sdk-client'
+project(':sdk-client').projectDir = new File("./sdk-client/app")
